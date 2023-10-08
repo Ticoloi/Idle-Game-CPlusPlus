@@ -9,7 +9,9 @@ bool close = false;
 //Game essential var:
 double number;
 double nps;
+double bnps;
 double npc = 1.00;
+string order;
 
 //Key var:
 const double KEY_PRICE = 5.00;
@@ -33,27 +35,39 @@ double TerminalPrice;
 double TerminalProduction = TERMINAL_PRODUCTION;
 int TerminalBought = 0;
 
-
-const double MEME_PRICE = 1750.00;
+//Meme var
+const double MEME_PRICE = 1850.00;
 const double MEME_PRODUCTION = 45;
 double MemePrice;
 double MemeProduction = MEME_PRODUCTION;
 int MemeBough = 0;
 
-//Upgrades vars
+//Upgrades unlcok bool
 bool CanBuyKeyKeyUpgrade = false;
 bool CanUnlockKeyKeyUpgrade = true;
 bool HaveKeyKeyUpgrade = false;
+
 bool CanBuyCasioUpgrade = false;
 bool CanUnlockCasioUpgrade = true;
 bool HaveCasioUpgrade = false;
 
+bool CanBuyBinaryUpgrade = false;
+bool CanUnlockBinaryUpgrade = true;
+bool HaveBinaryUpgrade = false;
 
 // Upgrade constants
 const int KEYKEY_UPGRADE_PRICE = 100;
-const int KEYKEY_DOBLE_UNLOCK = 2;
+const int KEYKEY_DOBLE_UNLOCK = 5;
+
 const int CASIO_UPGRADE_PRICE = 1000;
-const int CASIO_UPGRADE_UNLOCK = 5;
+const int CASIO_UPGRADE_UNLOCK = 10;
+
+const int BINARY_UPGRADE_PRICE = 1000;
+const int BINARY_UPGRADE_UNLOCK = 100;
+
+//multipler
+double multiplier = 0.00;
+const int BINARY_MULTIPLIER = 1;
 
 //String constants for text:
 const string NEW_TO_DO = "\nPlease write a new order:";
@@ -61,6 +75,7 @@ const string ORDER_ERROR = "\nERROR, not an order!";
 const string LEAVE = "leave";
 const string YES = "yes";
 const string NO = "no";
+
 
 //String Basic Orders
 const string HELP = "help";
@@ -78,8 +93,10 @@ const string KEY = "key";
 const string MEME = "meme";
 const string TERMINAL = "terminal";
 const string CALCULATOR = "calculator";
+
 const string KEYKEY = "keykey";
 const string CASIO = "casio";
+const string BINARY = "binary";
 
 //String Constants, help menu
 const string HELP_MENU_WELCOME = "Welcome to the help menu! All you see are orders, write the order so you will get help.";
@@ -93,17 +110,17 @@ const string HELP_MENU_INFO = "It opens the info menu, you will get info like np
 const string YOU_GOT_PLUS = "You got: ";;
 const string AND_NOW_YOU_HAVE_PLUS = " numbers. You now have: ";
 
-//String Constants, build descriptions
-const string SHOP_KEY_DESCRIPTION = "A + key to write more + and get more numbers!";
-const string SHOP_CALCULATOR_DESCRIPTION = "A Casio calculator to calculate more numbers!";
-const string SHOP_TERMINAL_DESCRIPTION = "A terminal to get more numbers";
-const string SHOP_MEME_DESCRIPTION = "Haa ha ha, look, a cat meme!";
-
 //String constants, info menu
 const string INFO_WELCOME = "Welcome to the info menu! Here you can see your stats and other.... info. ";
 const string INFO_NPC = "Numbers per (click?): ";
 const string INFO_NPS = "Numbers per second: ";
 const string INFO_CREDITS = "Game (Its a game?) made by Eloi, you can edit this game if you want :). If you like this project, play Cookie clicker";
+
+//String Constants, build descriptions
+const string SHOP_KEY_DESCRIPTION = "A + key to write more + and get more numbers!";
+const string SHOP_CALCULATOR_DESCRIPTION = "A Casio calculator to calculate more numbers!";
+const string SHOP_TERMINAL_DESCRIPTION = "A terminal to get more numbers";
+const string SHOP_MEME_DESCRIPTION = "Haa ha ha, look, a cat meme!";
 
 // how many builds you have?
 const string KEY_OWNED = " Keys owned: ";
@@ -128,12 +145,13 @@ const string NEW_UPGRADE = "You unlocked a new upgrade! Open the shop menu writi
 //Upgrade String Constants
 const string KEYKEY_DESCRIPTION = "Your + key and keys will get a double number production!";
 const string KEYKEY_USER_BOUGHT = "You bought the keykey upgrade! Now lets write a + a lot of times!";
+
 const string CASIO_DESCRIPTION = "Wow, the calculators now will not explode!";
 const string CASIO_USER_BOUGHT = "The calculators are now OP!";
 
+const string BINARY_DESCRIPTION = "The 0 and the 1 will be giving you 1% more numbers";
+const string BINARY_USER_BOUGHT = "You are now a boolean";
 
-
-string order;
 
 
 void KeyKeyUnlock(){
@@ -148,33 +166,6 @@ void KeyKeyUnlock(){
     }
 }
 
-void KeyKeyWork(){
-    bool upgradet = false;
-    while(close == false){
-        if(HaveKeyKeyUpgrade == true){
-            if(upgradet == false){
-                KeyProduction = KeyProduction*2;
-                npc = npc*2;
-                upgradet = true;
-            }
-        }
-    }
-}
-
-
-void CasioWork(){
-    bool upgradet = false;
-    while(close == false){
-        if(HaveCasioUpgrade == true){
-            if(upgradet == false){
-                CalculatorProduction = CalculatorProduction*2;
-                upgradet = true;
-            }
-        }
-    }
-}
-
-
 void CasioUnlock(){
     while(close == false){
         if(CalculatorBought >= CASIO_UPGRADE_UNLOCK){
@@ -187,11 +178,25 @@ void CasioUnlock(){
     }
 }
 
+
+void BinaryUnlock(){
+    while(close == false){
+        if(number >= BINARY_UPGRADE_UNLOCK){
+                if(CanUnlockBinaryUpgrade == true){
+                    CanBuyBinaryUpgrade = true;
+                    CanUnlockBinaryUpgrade = false;
+                    cout << endl << NEW_UPGRADE << NEW_TO_DO << endl;
+                }
+        }
+    }
+}
+
 void funcion1() {
     while(close == false){
         std::this_thread::sleep_for(std::chrono::seconds(1));
         number+=nps;
-        nps = KeyBought*KeyProduction + CalculatorBought*CalculatorProduction + TerminalBought*TerminalProduction + MemeBough*MemeProduction;
+        bnps = KeyBought*KeyProduction + CalculatorBought*CalculatorProduction + TerminalBought*TerminalProduction + MemeBough*MemeProduction;
+        nps = bnps + bnps*multiplier/100;
     }
 }
 
@@ -215,7 +220,6 @@ void funcion2() {
 
             else if(order == INFO) {
                 cout << endl << INFO_WELCOME << endl << INFO_NPC << npc << endl << INFO_NPS << nps << endl << INFO_CREDITS << endl << NEW_TO_DO << endl;
-
             }
 
             else if(order == BUY) {
@@ -262,7 +266,7 @@ void funcion2() {
                                 }
                                 else if(order == NO){cout <<  NEW_TO_DO << endl;}
                                 else cout << ORDER_ERROR <<  NEW_TO_DO << endl;
-                            }
+                        }
 
                         else if(order == TERMINAL){
                             TerminalPrice = TERMINAL_PRICE + TerminalBought*75;
@@ -279,7 +283,7 @@ void funcion2() {
                                 }
                                 else if(order == NO){cout <<  NEW_TO_DO << endl;}
                                 else cout << ORDER_ERROR <<  NEW_TO_DO << endl;
-                            }
+                        }
 
                         else if(order == MEME){
                             MemePrice = MEME_PRICE + MemeBough*100;
@@ -296,64 +300,89 @@ void funcion2() {
                                 }
                                 else if(order == NO){cout <<  NEW_TO_DO << endl;}
                                 else cout << ORDER_ERROR <<  NEW_TO_DO << endl;
-                            }
+                        }
 
-                            else if(order == LEAVE) {cout << NEW_TO_DO << endl;}
-                            else cout << ORDER_ERROR << NEW_TO_DO << endl;
+                        else if(order == LEAVE) {cout << NEW_TO_DO << endl;}
+                        else cout << ORDER_ERROR << NEW_TO_DO << endl;
 
                     }
                     else if(order == BUY_UPGRADE){
                         cout << endl << SHOP_UPGRADE_WELCOME;
                         if(CanBuyKeyKeyUpgrade == true) cout << endl << "- " << KEYKEY;
                         if(CanBuyCasioUpgrade == true) cout << endl << "- " << CASIO;
+                        if(CanBuyBinaryUpgrade == true) cout << endl << "- " << BINARY;
                         cout << endl << LEAVE;
                         cout << endl;
                         cout << "<" << BUY << "><" << BUY_UPGRADE << "> ";
                         cin >> order;
 
                         if (order == KEYKEY){
-                                if(CanBuyKeyKeyUpgrade == true){
-                                    cout << endl <<  KEYKEY_DESCRIPTION << SHOP_PRICE << KEYKEY_UPGRADE_PRICE << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
-                                    cout << "<" << BUY << "><" << BUY_UPGRADE << "><" << KEYKEY << "> ";
-                                    cin >> order;
-                                    if(order == YES){
-                                            if(number >= KEYKEY_UPGRADE_PRICE){
-                                                cout << endl << KEYKEY_USER_BOUGHT << endl;
-                                                CanBuyKeyKeyUpgrade = false;
-                                                HaveKeyKeyUpgrade = true;
-                                                number = number - KEYKEY_UPGRADE_PRICE;
-                                            }
-                                            else cout << endl << SHOP_YOU_CANT_BUY_THAT << NEW_TO_DO << endl;
-                                    }
-                                    else if(order == NO){cout <<  NEW_TO_DO << endl;}
-                                    else cout << ORDER_ERROR << NEW_TO_DO << endl;
+                            if(CanBuyKeyKeyUpgrade == true){
+                                cout << endl <<  KEYKEY_DESCRIPTION << SHOP_PRICE << KEYKEY_UPGRADE_PRICE << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                                cout << "<" << BUY << "><" << BUY_UPGRADE << "><" << KEYKEY << "> ";
+                                cin >> order;
+                                if(order == YES){
+                                        if(number >= KEYKEY_UPGRADE_PRICE){
+                                            cout << endl << KEYKEY_USER_BOUGHT << endl;
+                                            KeyProduction = KeyProduction*2;
+                                            npc = npc*2;
+                                            CanBuyKeyKeyUpgrade = false;
+                                            HaveKeyKeyUpgrade = true;
+                                            number = number - KEYKEY_UPGRADE_PRICE;
+                                        }
+                                        else cout << endl << SHOP_YOU_CANT_BUY_THAT << NEW_TO_DO << endl;
                                 }
-                                else cout << ORDER_ERROR << NEW_TO_DO << endl;
-
-                            }
-                            if (order == CASIO){
-                                if(CanBuyCasioUpgrade == true){
-                                    cout << endl <<  CASIO_DESCRIPTION << SHOP_PRICE << CASIO_UPGRADE_PRICE << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
-                                    cout << "<" << BUY << "><" << BUY_UPGRADE << "><" << CASIO << "> ";
-                                    cin >> order;
-                                    if(order == YES){
-                                            if(number >= CASIO_UPGRADE_PRICE){
-                                                cout << endl << CASIO_USER_BOUGHT << endl;
-                                                CanBuyCasioUpgrade = false;
-                                                HaveCasioUpgrade = true;
-                                                number = number - CASIO_UPGRADE_PRICE;
-                                            }
-                                            else cout << endl << SHOP_YOU_CANT_BUY_THAT << NEW_TO_DO << endl;
-                                    }
-                                    else if(order == NO){cout <<  NEW_TO_DO << endl;}
-                                    else cout << ORDER_ERROR << NEW_TO_DO << endl;
-                                }
+                                else if(order == NO){cout <<  NEW_TO_DO << endl;}
                                 else cout << ORDER_ERROR << NEW_TO_DO << endl;
                             }
-                            else if(order == LEAVE) {cout << NEW_TO_DO << endl;}
+                            else cout << ORDER_ERROR << NEW_TO_DO << endl;
                         }
-                        else if(order == LEAVE) {cout << NEW_TO_DO << endl;}
+
+                        else if (order == CASIO){
+                            if(CanBuyCasioUpgrade == true){
+                                cout << endl <<  CASIO_DESCRIPTION << SHOP_PRICE << CASIO_UPGRADE_PRICE << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                                cout << "<" << BUY << "><" << BUY_UPGRADE << "><" << CASIO << "> ";
+                                cin >> order;
+                                if(order == YES){
+                                        if(number >= CASIO_UPGRADE_PRICE){
+                                            cout << endl << CASIO_USER_BOUGHT << endl;
+                                            CalculatorProduction = CalculatorProduction*2;
+                                            CanBuyCasioUpgrade = false;
+                                            HaveCasioUpgrade = true;
+                                            number = number - CASIO_UPGRADE_PRICE;
+                                        }
+                                        else cout << endl << SHOP_YOU_CANT_BUY_THAT << NEW_TO_DO << endl;
+                                }
+                                else if(order == NO){cout <<  NEW_TO_DO << endl;}
+                                else cout << ORDER_ERROR << NEW_TO_DO << endl;
+                            }
+                            else cout << ORDER_ERROR << NEW_TO_DO << endl;
+                        }
+
+                        else if (order == BINARY){
+                            if(CanBuyBinaryUpgrade == true){
+                                cout << endl <<  BINARY_DESCRIPTION << SHOP_PRICE << BINARY_UPGRADE_PRICE << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                                cout << "<" << BUY << "><" << BUY_UPGRADE << "><" << BINARY << "> ";
+                                cin >> order;
+                                if(order == YES){
+                                        if(number >= BINARY_UPGRADE_PRICE){
+                                            cout << endl << BINARY_USER_BOUGHT << endl;
+                                            multiplier = multiplier + BINARY_MULTIPLIER;
+                                            CanBuyBinaryUpgrade = false;
+                                            HaveBinaryUpgrade = true;
+                                            number = number - BINARY_UPGRADE_PRICE;
+                                        }
+                                        else cout << endl << SHOP_YOU_CANT_BUY_THAT << NEW_TO_DO << endl;
+                                }
+                                else if(order == NO){cout <<  NEW_TO_DO << endl;}
+                                else cout << ORDER_ERROR << NEW_TO_DO << endl;
+                            }
+                            else cout << ORDER_ERROR << NEW_TO_DO << endl;
+                        }
                         else cout << ORDER_ERROR << NEW_TO_DO << endl;
+                    }
+                    else if(order == LEAVE) {cout << NEW_TO_DO << endl;}
+                    else cout << ORDER_ERROR << NEW_TO_DO << endl;
             }
             else cout << ORDER_ERROR << NEW_TO_DO << endl;
     }
@@ -365,19 +394,18 @@ void funcion2() {
 int main(){
 
     cout << "Welcome to this idle game! Write + and press enter. Write help to get help." << endl;
-
     std::thread t1(funcion1);
     std::thread t2(funcion2);
-    std::thread t3(CasioWork);
-    std::thread t4(CasioUnlock);
-    std::thread t5(KeyKeyWork);
-    std::thread t6(KeyKeyUnlock);
+    std::thread t3(CasioUnlock);
+    std::thread t4(KeyKeyUnlock);
+    std::thread t5(BinaryUnlock);
+
     t1.join();
     t2.join();
     t3.join();
     t4.join();
     t5.join();
-    t6.join();
+
     cout << endl << "Bye!" << endl;
     return 0;
 }
