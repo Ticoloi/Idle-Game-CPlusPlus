@@ -9,22 +9,23 @@ bool close = false;
 //Game essential var:
 double number;
 double nps;
-double bnps;
 double npc = 1.00;
 string order;
 
 //Key var:
-const double KEY_PRICE = 5.00;
-const double KEY_PRODUCTION = 0.2;
+const double KEY_PRICE = 10.00;
+const double KEY_PRODUCTION = 0.1;
 double KeyPrice;
 double KeyProduction = KEY_PRODUCTION;
+double FinalKeyProduction;
 int KeyBought = 0;
 
 //Calculator var
-const double CALCULATOR_PRICE = 75.00;
+const double CALCULATOR_PRICE = 100.00;
 const double CALCULATOR_PRODUCTION = 1;
 double CalculatorPrice;
 double CalculatorProduction = CALCULATOR_PRODUCTION;
+double FinalCalculatorProduction;
 int CalculatorBought = 0;
 
 
@@ -33,6 +34,7 @@ const double TERMINAL_PRICE = 850.00;
 const double TERMINAL_PRODUCTION = 10;
 double TerminalPrice;
 double TerminalProduction = TERMINAL_PRODUCTION;
+double FinalTerminalProduction;
 int TerminalBought = 0;
 
 //Meme var
@@ -40,7 +42,16 @@ const double MEME_PRICE = 1850.00;
 const double MEME_PRODUCTION = 45;
 double MemePrice;
 double MemeProduction = MEME_PRODUCTION;
+double FinalMemeProduction;
 int MemeBough = 0;
+
+//Meme var
+const double JAVA_PRICE = 10000.00;
+const double JAVA_PRODUCTION = 95;
+double JavaPrice;
+double JavaProduction = JAVA_PRODUCTION;
+double FinalJavaProduction;
+int JavaBough = 0;
 
 //Upgrades unlcok bool
 bool CanBuyKeyKeyUpgrade = false;
@@ -59,7 +70,7 @@ bool HaveBinaryUpgrade = false;
 const int KEYKEY_UPGRADE_PRICE = 100;
 const int KEYKEY_DOBLE_UNLOCK = 5;
 
-const int CASIO_UPGRADE_PRICE = 1000;
+const int CASIO_UPGRADE_PRICE = 500;
 const int CASIO_UPGRADE_UNLOCK = 10;
 
 const int BINARY_UPGRADE_PRICE = 1000;
@@ -93,6 +104,7 @@ const string KEY = "key";
 const string MEME = "meme";
 const string TERMINAL = "terminal";
 const string CALCULATOR = "calculator";
+const string JAVA = "java";
 
 const string KEYKEY = "keykey";
 const string CASIO = "casio";
@@ -121,12 +133,14 @@ const string SHOP_KEY_DESCRIPTION = "A + key to write more + and get more number
 const string SHOP_CALCULATOR_DESCRIPTION = "A Casio calculator to calculate more numbers!";
 const string SHOP_TERMINAL_DESCRIPTION = "A terminal to get more numbers";
 const string SHOP_MEME_DESCRIPTION = "Haa ha ha, look, a cat meme!";
+const string SHOP_JAVA_DESCRIPTION = "Literay, an island to make numbers.... Or a coffe?";
 
 // how many builds you have?
 const string KEY_OWNED = " Keys owned: ";
 const string CALCULATOR_OWNED = " Calculators owned: ";
 const string TERMINAL_OWNED = " Terminal owned: ";
 const string MEME_OWNED = " Memes owned: ";
+const string JAVA_OWNED = " Islands owned: ";
 
 //String Constants, shop
 const string SHOP_WELCOME = "Welcome to the shop! Please select an order:";
@@ -191,12 +205,21 @@ void BinaryUnlock(){
     }
 }
 
+void ProductionCalc(){
+    while(close == false){
+    nps = KeyBought*FinalKeyProduction + CalculatorBought*FinalCalculatorProduction + TerminalBought*FinalTerminalProduction + MemeBough*FinalMemeProduction + FinalJavaProduction*JavaBough;
+    FinalKeyProduction = KeyProduction + KeyProduction*multiplier/100;
+    FinalCalculatorProduction = CalculatorProduction + CalculatorProduction*multiplier/100;
+    FinalTerminalProduction = TerminalProduction + TerminalProduction*multiplier/100;
+    FinalMemeProduction = MemeProduction + MemeProduction*multiplier/100;
+    FinalJavaProduction = JavaProduction + JavaProduction*multiplier/100;
+    }
+}
+
 void funcion1() {
     while(close == false){
         std::this_thread::sleep_for(std::chrono::seconds(1));
         number+=nps;
-        bnps = KeyBought*KeyProduction + CalculatorBought*CalculatorProduction + TerminalBought*TerminalProduction + MemeBough*MemeProduction;
-        nps = bnps + bnps*multiplier/100;
     }
 }
 
@@ -230,13 +253,13 @@ void funcion2() {
 
                     if(order == BUY_BUILD){
 
-                        cout<< endl << SHOP_BUILD_WELCOME << endl << "1- " << KEY << endl << "2- " << CALCULATOR << endl << "3- " << TERMINAL << endl << "4- " << MEME << endl << LEAVE <<  endl;
+                        cout<< endl << SHOP_BUILD_WELCOME << endl << "1- " << KEY << endl << "2- " << CALCULATOR << endl << "3- " << TERMINAL << endl << "4- " << MEME << endl << "5- " << JAVA << endl << LEAVE <<  endl;
                         cout << "<" << BUY << "><" << BUY_BUILD << "> ";
                         cin >> order;
 
                         if(order == KEY){
                             KeyPrice = KEY_PRICE + KeyBought/10.00;
-                            cout<< endl << SHOP_KEY_DESCRIPTION << SHOP_PRICE << KeyPrice << SHOP_NPS << KeyProduction << KEY_OWNED << KeyBought << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                            cout<< endl << SHOP_KEY_DESCRIPTION << SHOP_PRICE << KeyPrice << SHOP_NPS << FinalKeyProduction << KEY_OWNED << KeyBought << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
                             cout << "<" << BUY << "><" << BUY_BUILD << "><" << KEY << "> ";
                             cin >> order;
                             if(order == YES) {
@@ -253,7 +276,7 @@ void funcion2() {
 
                         else if(order == CALCULATOR){
                             CalculatorPrice = CALCULATOR_PRICE + CalculatorBought;
-                            cout<< endl << SHOP_CALCULATOR_DESCRIPTION << SHOP_PRICE << CalculatorPrice << SHOP_NPS << CalculatorProduction << CALCULATOR_OWNED << CalculatorBought << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                            cout<< endl << SHOP_CALCULATOR_DESCRIPTION << SHOP_PRICE << CalculatorPrice << SHOP_NPS << FinalCalculatorProduction << CALCULATOR_OWNED << CalculatorBought << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
                             cout << "<" << BUY << "><" << BUY_BUILD << "><" << CALCULATOR << "> ";
                             cin >> order;
                             if(order == YES) {
@@ -270,7 +293,7 @@ void funcion2() {
 
                         else if(order == TERMINAL){
                             TerminalPrice = TERMINAL_PRICE + TerminalBought*75;
-                            cout<< endl << SHOP_TERMINAL_DESCRIPTION << SHOP_PRICE << TerminalPrice << SHOP_NPS << TerminalProduction << TERMINAL_OWNED << TerminalBought << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                            cout<< endl << SHOP_TERMINAL_DESCRIPTION << SHOP_PRICE << TerminalPrice << SHOP_NPS << FinalTerminalProduction << TERMINAL_OWNED << TerminalBought << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
                             cout << "<" << BUY << "><" << BUY_BUILD << "><" << TERMINAL << "> ";
                             cin >> order;
                             if(order == YES) {
@@ -287,7 +310,7 @@ void funcion2() {
 
                         else if(order == MEME){
                             MemePrice = MEME_PRICE + MemeBough*100;
-                            cout<< endl << SHOP_MEME_DESCRIPTION << SHOP_PRICE << MemePrice << SHOP_NPS << MemeProduction << MEME_OWNED << MemeBough << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                            cout<< endl << SHOP_MEME_DESCRIPTION << SHOP_PRICE << MemePrice << SHOP_NPS << FinalMemeProduction << MEME_OWNED << MemeBough << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
                             cout << "<" << BUY << "><" << BUY_BUILD << "><" << MEME << "> ";
                             cin >> order;
                             if(order == YES) {
@@ -295,6 +318,23 @@ void funcion2() {
                                         cout << endl << SHOP_YOU_BOUGHT << MEME << "!" << NEW_TO_DO << endl;
                                         MemeBough++;
                                         number = number - MemePrice;
+                                        }
+                                    else cout << endl << SHOP_YOU_CANT_BUY_THAT << NEW_TO_DO << endl;
+                                }
+                                else if(order == NO){cout <<  NEW_TO_DO << endl;}
+                                else cout << ORDER_ERROR <<  NEW_TO_DO << endl;
+                        }
+
+                        else if(order == JAVA){
+                            JavaPrice = JAVA_PRICE + JavaBough*1000;
+                            cout<< endl << SHOP_JAVA_DESCRIPTION << SHOP_PRICE << JavaPrice << SHOP_NPS << FinalJavaProduction << JAVA_OWNED << JavaBough << SHOP_CONFIRMATION << " " << YES << "/" << NO << endl;
+                            cout << "<" << BUY << "><" << BUY_BUILD << "><" << JAVA << "> ";
+                            cin >> order;
+                            if(order == YES) {
+                                    if(number >= JavaPrice){
+                                        cout << endl << SHOP_YOU_BOUGHT << JAVA << "!" << NEW_TO_DO << endl;
+                                        JavaBough++;
+                                        number = number - JavaPrice;
                                         }
                                     else cout << endl << SHOP_YOU_CANT_BUY_THAT << NEW_TO_DO << endl;
                                 }
@@ -399,12 +439,14 @@ int main(){
     std::thread t3(CasioUnlock);
     std::thread t4(KeyKeyUnlock);
     std::thread t5(BinaryUnlock);
+    std::thread t6(ProductionCalc);
 
     t1.join();
     t2.join();
     t3.join();
     t4.join();
     t5.join();
+    t6.join();
 
     cout << endl << "Bye!" << endl;
     return 0;
